@@ -3,15 +3,14 @@
   "version": "1.0.0",
   "private": true,
   "type": "module",
-  "main": "server.mjs",
   "engines": {
-    "node": "^20.19.0 || >=22.12.0"
+    "node": "22.x"
   },
   "scripts": {
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "start": "node server.mjs"
+    "verify:static": "node scripts/verify-static.mjs"
   },
   "dependencies": {
     "react": "19.2.6",

@@ -3,12 +3,12 @@
 import { useEffect, useRef, useState, type CSSProperties, type ReactNode } from "react";
 
 const views = [
-  { src: "/dentix-consultorio.png", title: "Dentro del consultorio", detail: "Un espacio pensado para atender.", position: "50% 55%" },
-  { src: "/dentix-recepcion.png", title: "La primera impresión", detail: "Recepción y bienvenida.", position: "50% 46%" },
-  { src: "/dentix-clinica.png", title: "Otra perspectiva", detail: "Recorre el ambiente clínico.", position: "50% 48%" },
-  { src: "/modelo-consultorio.jpeg", title: "El corazón de la atención", detail: "Unidad dental y área de trabajo.", position: "50% 50%" },
-  { src: "/modelo-esterilizacion.jpeg", title: "Cada ambiente cuenta", detail: "Organización del área de esterilización.", position: "50% 50%" },
-  { src: "/modelo-distribucion.jpeg", title: "Mira el conjunto", detail: "Una visión completa de los ambientes.", position: "50% 50%" },
+  { src: "./dentix-consultorio.png", title: "Dentro del consultorio", detail: "Un espacio pensado para atender.", position: "50% 55%" },
+  { src: "./dentix-recepcion.png", title: "La primera impresión", detail: "Recepción y bienvenida.", position: "50% 46%" },
+  { src: "./dentix-clinica.png", title: "Otra perspectiva", detail: "Recorre el ambiente clínico.", position: "50% 48%" },
+  { src: "./modelo-consultorio.jpeg", title: "El corazón de la atención", detail: "Unidad dental y área de trabajo.", position: "50% 50%" },
+  { src: "./modelo-esterilizacion.jpeg", title: "Cada ambiente cuenta", detail: "Organización del área de esterilización.", position: "50% 50%" },
+  { src: "./modelo-distribucion.jpeg", title: "Mira el conjunto", detail: "Una visión completa de los ambientes.", position: "50% 50%" },
 ];
 const clamp = (value: number, min = 0, max = 1) => Math.min(max, Math.max(min, value));
 

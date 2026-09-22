@@ -9,21 +9,32 @@ npm install
 npm run dev
 ```
 
-## Publicación en Hostinger como aplicación Node.js
+## Publicación estática en Hostinger
 
-Configura el proyecto con estos valores:
+El código fuente se mantiene en `main`. Cada cambio en esa rama ejecuta una
+compilación automática y publica **el contenido interno de `dist`** en la rama
+`hostinger-static`.
 
-- Rama: `main`
-- Versión de Node.js: 22 (también admite 20.19 o superior)
-- Comando de instalación: `npm install`
-- Comando de compilación: `npm run build`
-- Directorio de salida: `dist`
-- Comando de inicio, si Hostinger lo solicita: `npm start`
-- Archivo de entrada, si aparece como tipo “Other”: `server.mjs`
+En Hostinger configura Advanced → Git así:
 
-## Publicación estática mediante Advanced → Git
+- Repositorio: `Intisamin/categorizacion-dental`
+- Rama: `hostinger-static`
+- Directorio de destino: `public_html`
+- Comando de compilación: ninguno
+- Comando de inicio: ninguno
 
-Selecciona la rama `hostinger-static`. Esa rama contiene la versión compilada con `index.html` en la raíz y no requiere ejecutar Node.js ni un comando de compilación.
+La rama `hostinger-static` debe mostrar `index.html`, `assets/` y las imágenes
+directamente en su raíz. No debe contener una carpeta `dist`.
+
+Para comprobar la compilación manualmente:
+
+```bash
+npm ci
+npm run build
+```
+
+El resultado se genera en `dist/index.html`. Node.js 22 se utiliza solamente
+para compilar; la página publicada funciona como HTML, CSS y JavaScript estáticos.
 
 ## Contenido
 
