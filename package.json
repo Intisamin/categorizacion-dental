@@ -1,10 +1,10 @@
 {
-  "name": "catgorizacion",
+  "name": "categorizacion-dental",
   "version": "1.0.0",
   "private": true,
   "type": "module",
   "engines": {
-    "node": ">=20"
+    "node": ">=22.13.0"
   },
   "scripts": {
     "dev": "vite",
