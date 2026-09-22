@@ -3,7 +3,7 @@
 import { useMemo, useRef, useState } from "react";
 import ClinicTour from "./components/ClinicTour";
 
-const PHONE = "51963477926";
+const PHONE = "51963417926";
 const wa = (message: string) => `https://wa.me/${PHONE}?text=${encodeURIComponent(message)}`;
 
 const cases = [
