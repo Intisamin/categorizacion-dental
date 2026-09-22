@@ -11,11 +11,12 @@ npm run dev
 
 ## Publicación estática en Hostinger
 
-El código fuente se mantiene en `main`. Cada cambio en esa rama ejecuta una
-compilación automática y publica **el contenido interno de `dist`** en la rama
-`hostinger-static`.
+El código fuente se mantiene en `main`. La raíz de esa misma rama contiene una
+copia compilada para evitar que Hostinger abra el `index.html` de desarrollo.
+Cada cambio ejecuta una compilación automática y también publica **el contenido
+interno de `dist`** en la rama limpia `hostinger-static`.
 
-En Hostinger configura Advanced → Git así:
+Configuración recomendada en Hostinger, mediante Advanced → Git:
 
 - Repositorio: `Intisamin/categorizacion-dental`
 - Rama: `hostinger-static`
@@ -25,6 +26,9 @@ En Hostinger configura Advanced → Git así:
 
 La rama `hostinger-static` debe mostrar `index.html`, `assets/` y las imágenes
 directamente en su raíz. No debe contener una carpeta `dist`.
+
+Si una integración antigua continúa fijada a `main`, la raíz de `main` también
+contiene el `index.html` compilado y puede servirse sin ejecutar Node.js.
 
 Para comprobar la compilación manualmente:
 

@@ -60,6 +60,19 @@ for (const source of publicFiles) {
   if (!sourceBytes.equals(destinationBytes)) errors.push(`El recurso cambió al compilar: ${relative(publicDir, source)}`);
 }
 
+for (const source of outputFiles) {
+  const destination = join(project, relative(output, source));
+  if (!await exists(destination)) {
+    errors.push(`No se sincronizó ${relative(output, source)} con la raíz publicable`);
+    continue;
+  }
+  const [sourceBytes, destinationBytes] = await Promise.all([readFile(source), readFile(destination)]);
+  if (!sourceBytes.equals(destinationBytes)) errors.push(`La copia de raíz no coincide: ${relative(output, source)}`);
+}
+
+const rootHtml = await readFile(join(project, "index.html"), "utf8");
+if (/main\.tsx|\/src\//i.test(rootHtml)) errors.push("El index.html de la raíz todavía apunta al código fuente");
+
 if (!outputFiles.some((file) => /\/assets\/[^/]+\.js$/.test(file))) errors.push("Falta el JavaScript compilado en dist/assets");
 if (!outputFiles.some((file) => /\/assets\/[^/]+\.css$/.test(file))) errors.push("Falta el CSS compilado en dist/assets");
 
@@ -68,4 +81,4 @@ if (errors.length) {
   process.exit(1);
 }
 
-console.log(`Salida estática válida: ${outputFiles.length} archivos, index.html en la raíz y recursos relativos.`);
+console.log(`Salida estática válida: ${outputFiles.length} archivos, index.html en dist y en la raíz, con recursos relativos.`);

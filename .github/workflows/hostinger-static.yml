@@ -34,6 +34,18 @@ jobs:
       - name: Verify static output
         run: npm run verify:static
 
+      - name: Keep main deployable from public_html
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add --all
+          if git diff --cached --quiet; then
+            echo "Compiled root is already current."
+          else
+            git commit -m "Actualizar raíz compilada para Hostinger [skip ci]"
+            git push origin HEAD:main
+          fi
+
       - name: Publish compiled files
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
