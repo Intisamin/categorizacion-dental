@@ -13,7 +13,7 @@ npm run dev
 
 Configura el proyecto con estos valores:
 
-- Versión de Node.js: 20 o superior
+- Versión de Node.js: 22
 - Comando de instalación: `npm install`
 - Comando de compilación: `npm run build`
 - Directorio de salida: `dist`
