@@ -20,8 +20,8 @@ export default function ClinicTour({ children }: { children: ReactNode }) {
     </div>
     <div className="aerial-visual">
       <div className="aerial-view-title"><span>EL CONSULTORIO, DESDE ARRIBA</span><span>VISTA 3D</span></div>
-      <iframe src="./consultorio-aereo/index.html" title="Recorrido aéreo interactivo del consultorio dental" className="aerial-frame" />
-      <p className="aerial-hint">Arrastra para girar · Vista aérea únicamente <span>Modelo ilustrativo</span></p>
+      <iframe src="./consultorio-aereo/index.html?v=2" title="Recorrido aéreo interactivo del consultorio dental" className="aerial-frame" />
+      <p className="aerial-hint">Acerca con la rueda o con dos dedos · Arrastra para moverte <span>Modelo ilustrativo · Solo vista aérea, sin recorrido interior</span></p>
     </div>
     <dialog ref={dialog} className="ai-consult-dialog" onClick={event => {if(event.target===event.currentTarget)dialog.current?.close()}}>
       <button className="ai-dialog-close" type="button" aria-label="Cerrar consulta" onClick={() => dialog.current?.close()}>×</button>

@@ -173,25 +173,109 @@ function model(file,size,places,fb){if(!T.GLTFLoader)return;new T.GLTFLoader().l
 COLL.push([2.3,0.85,3.25,2.7]);BENCH.forEach(p=>COLL.push([p[0]-0.8,p[1]-0.3,p[0]+0.8,p[1]+0.3]));
 model('unit.json',2.0,[[2.7,0,1.75,RY.unit]],FB.unit);model('autoclave.json',0.6,[[9.45,0.9,0.42,RY.autoclave]],FB.autoclave);model('xray.json',1.35,[[5.3,0.95,0.8,RY.xray]],FB.xray);model('bench.json',1.65,BENCH.map(p=>[p[0],0,p[1],RY.bench]),FB.bench);
 
-/* Aerial showcase only: no walk mode, labels, assessment data or room selection. */
+/* Only aerial navigation. Camera altitude stays above every wall. */
 const motion=matchMedia('(prefers-reduced-motion: reduce)');
-let angle=.45,elevation=.62,drag=null,playing=!motion.matches,visible=true,previous=0;
 const clamp=(n,a,b)=>Math.max(a,Math.min(b,n));
-function resize(){const w=cv.clientWidth,h=cv.clientHeight;renderer.setSize(w,h,false);cam.aspect=w/h;cam.updateProjectionMatrix()}
-new ResizeObserver(resize).observe(cv);resize();
-function updateCamera(){const radius=Math.max(22,18/cam.aspect);cam.position.set(9+radius*Math.sin(elevation)*Math.sin(angle),radius*Math.cos(elevation),5.9+radius*Math.sin(elevation)*Math.cos(angle));cam.lookAt(9,0,5.9)}
-function syncPlay(){$('play').textContent=playing?'Pausar giro':'Girar vista';$('play').setAttribute('aria-pressed',String(playing))}
-$('play').onclick=()=>{playing=!playing;syncPlay()};
-$('reset').onclick=()=>{angle=.45;elevation=.62};
-cv.addEventListener('pointerdown',e=>{if(e.button!==0)return;cv.setPointerCapture(e.pointerId);drag={id:e.pointerId,x:e.clientX,y:e.clientY};playing=false;syncPlay()});
-cv.addEventListener('pointermove',e=>{if(!drag||drag.id!==e.pointerId)return;angle-=(e.clientX-drag.x)*.006;elevation=clamp(elevation-(e.clientY-drag.y)*.004,.15,.8);drag.x=e.clientX;drag.y=e.clientY});
-['pointerup','pointercancel','lostpointercapture'].forEach(name=>cv.addEventListener(name,()=>{drag=null}));
-cv.addEventListener('keydown',e=>{if(!['ArrowLeft','ArrowRight','ArrowUp','ArrowDown'].includes(e.key))return;e.preventDefault();playing=false;syncPlay();if(e.key==='ArrowLeft')angle-=.12;if(e.key==='ArrowRight')angle+=.12;if(e.key==='ArrowUp')elevation-=.05;if(e.key==='ArrowDown')elevation+=.05;elevation=clamp(elevation,.15,.8)});
-motion.addEventListener('change',()=>{if(motion.matches){playing=false;syncPlay()}});
+const view={angle:.45,elevation:.62,radius:22,x:9,z:5.9};
+let baseRadius=22,userZoom=false,mode='pan',playing=!motion.matches,visible=true,previous=0;
+const pointers=new Map();
+function constrain(){
+  view.elevation=clamp(view.elevation,.02,.95);
+  view.radius=clamp(view.radius,Math.max(4.5,3.4/Math.cos(view.elevation)),60);
+  view.x=clamp(view.x,-1,19);view.z=clamp(view.z,-1,13);
+}
+function updateCamera(){
+  constrain();
+  cam.position.set(view.x+view.radius*Math.sin(view.elevation)*Math.sin(view.angle),view.radius*Math.cos(view.elevation),view.z+view.radius*Math.sin(view.elevation)*Math.cos(view.angle));
+  cam.lookAt(view.x,0,view.z);cam.updateMatrixWorld();
+}
+function sync(){
+  $('play').textContent=playing?'Pausar giro':'Giro automático';
+  $('play').setAttribute('aria-pressed',String(playing));
+  $('pan').setAttribute('aria-pressed',String(mode==='pan'));
+  $('orbit').setAttribute('aria-pressed',String(mode==='orbit'));
+  $('zoom-value').textContent=Math.round(baseRadius/view.radius*100)+'%';
+  $('zoom-in').disabled=view.radius<=Math.max(4.5,3.4/Math.cos(view.elevation))+.001;
+  $('zoom-out').disabled=view.radius>=60;
+}
+function stop(){playing=false;sync()}
+function resize(){
+  const w=cv.clientWidth,h=cv.clientHeight;if(!w||!h)return;
+  renderer.setSize(w,h,false);cam.aspect=w/h;cam.updateProjectionMatrix();
+  baseRadius=Math.max(22,18/cam.aspect);if(!userZoom)view.radius=baseRadius;
+  updateCamera();sync();
+}
+const groundPlane=new T.Plane(new T.Vector3(0,1,0),0),ray=new T.Raycaster();
+function groundAt(x,y){
+  updateCamera();const r=cv.getBoundingClientRect();
+  ray.setFromCamera(new T.Vector2((x-r.left)/r.width*2-1,1-(y-r.top)/r.height*2),cam);
+  return ray.ray.intersectPlane(groundPlane,new T.Vector3());
+}
+function zoom(factor,x,y){
+  stop();const before=Number.isFinite(x)?groundAt(x,y):null;
+  view.radius*=factor;userZoom=true;updateCamera();
+  if(before){const after=groundAt(x,y);if(after){view.x+=before.x-after.x;view.z+=before.z-after.z}}
+  updateCamera();sync();
+}
+function pan(dx,dy){
+  const scale=2*view.radius*Math.tan(cam.fov*Math.PI/360)/cv.clientHeight;
+  view.x-=scale*(dx*Math.cos(view.angle)+dy*Math.sin(view.angle));
+  view.z+=scale*(dx*Math.sin(view.angle)-dy*Math.cos(view.angle));
+  updateCamera();
+}
+$('play').onclick=()=>{playing=!playing;sync()};
+$('pan').onclick=()=>{mode='pan';stop()};
+$('orbit').onclick=()=>{mode='orbit';stop()};
+$('zoom-in').onclick=()=>zoom(.8);
+$('zoom-out').onclick=()=>zoom(1.25);
+$('top').onclick=()=>{view.elevation=.02;stop();updateCamera()};
+$('reset').onclick=()=>{Object.assign(view,{angle:.45,elevation:.62,radius:baseRadius,x:9,z:5.9});userZoom=false;stop();updateCamera();sync()};
+function pair(){
+  const [a,b]=[...pointers.values()];
+  return {x:(a.x+b.x)/2,y:(a.y+b.y)/2,d:Math.max(1,Math.hypot(a.x-b.x,a.y-b.y))};
+}
+cv.addEventListener('pointerdown',e=>{
+  if(e.pointerType==='mouse'&&![0,1,2].includes(e.button))return;
+  cv.focus({preventScroll:true});cv.setPointerCapture(e.pointerId);
+  pointers.set(e.pointerId,{x:e.clientX,y:e.clientY,pan:e.button!==0||e.shiftKey});stop();
+});
+cv.addEventListener('pointermove',e=>{
+  const old=pointers.get(e.pointerId);if(!old)return;
+  const before=pointers.size===2?pair():null,dx=e.clientX-old.x,dy=e.clientY-old.y;
+  pointers.set(e.pointerId,{...old,x:e.clientX,y:e.clientY});
+  if(before){const after=pair();pan(after.x-before.x,after.y-before.y);zoom(before.d/after.d,after.x,after.y)}
+  else if(pointers.size===1){
+    if(mode==='pan'||old.pan||e.shiftKey)pan(dx,dy);
+    else{view.angle-=dx*.006;view.elevation-=dy*.004;updateCamera();sync()}
+  }
+});
+['pointerup','pointercancel','lostpointercapture'].forEach(name=>cv.addEventListener(name,e=>pointers.delete(e.pointerId)));
+cv.addEventListener('contextmenu',e=>e.preventDefault());
+cv.addEventListener('wheel',e=>{
+  e.preventDefault();
+  const delta=e.deltaY*(e.deltaMode===1?16:e.deltaMode===2?cv.clientHeight:1);
+  zoom(Math.exp(clamp(delta,-180,180)*.002),e.clientX,e.clientY);
+},{passive:false});
+cv.addEventListener('keydown',e=>{
+  if(['+','=','-','_'].includes(e.key)){e.preventDefault();zoom(e.key==='-'||e.key==='_'?1.18:1/1.18);return}
+  if(e.key==='Home'){e.preventDefault();$('reset').onclick();return}
+  if(!['ArrowLeft','ArrowRight','ArrowUp','ArrowDown'].includes(e.key))return;
+  e.preventDefault();stop();
+  const dx=e.key==='ArrowLeft'?32:e.key==='ArrowRight'?-32:0;
+  const dy=e.key==='ArrowUp'?32:e.key==='ArrowDown'?-32:0;
+  if(e.shiftKey){view.angle+=dx*.004;view.elevation+=dy*.002;updateCamera();sync()}else pan(dx,dy);
+});
+motion.addEventListener('change',()=>{if(motion.matches)stop()});
+new ResizeObserver(resize).observe(cv);
 new IntersectionObserver(([entry])=>{visible=entry.isIntersecting}).observe(cv);
 cv.addEventListener('webglcontextlost',e=>{e.preventDefault();$('nogl').hidden=false});
-syncPlay();
-renderer.setAnimationLoop(now=>{const dt=Math.min(.05,(now-(previous||now))/1000);previous=now;if(document.hidden||!visible)return;if(playing&&!drag)angle+=dt*.09;updateCamera();renderer.render(scene,cam)});
+resize();
+renderer.setAnimationLoop(now=>{
+  const dt=Math.min(.05,(now-(previous||now))/1000);previous=now;
+  if(document.hidden||!visible)return;
+  if(playing&&!pointers.size)view.angle+=dt*.09;
+  updateCamera();renderer.render(scene,cam);
+});
 })();
 
 
