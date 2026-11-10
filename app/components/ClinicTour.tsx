@@ -12,6 +12,10 @@ export default function ClinicTour({ children }: { children: ReactNode }) {
   return <section className="aerial-hero" aria-label="Vista aérea del consultorio y diagnóstico con IA">
     <div className="aerial-copy">
       {children}
+      <a href="#autodiagnostico" className="express-hero-cta">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 4.5h6M8 10l1.5 1.5L12 9M13 14h3M8 15l1.5 1.5L12 14"/></svg>
+        <span>Haz tu Diagnóstico Express <strong>GRATIS</strong><small>Descubre qué te falta · Solo 3 minutos</small></span>
+      </a>
       <button className="button aerial-cta" type="button" onClick={() => dialog.current?.showModal()}>
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v3m0 12v3M3 12h3m12 0h3M5.6 5.6l2.1 2.1m8.6 8.6 2.1 2.1M5.6 18.4l2.1-2.1m8.6-8.6 2.1-2.1"/><rect x="7" y="7" width="10" height="10" rx="3"/><path d="m10 13 2-3 2 3m-3.5-1h3"/></svg>
         <span>Diagnóstico con IA <strong>S/ 100</strong><small>Consultar por WhatsApp</small></span>
