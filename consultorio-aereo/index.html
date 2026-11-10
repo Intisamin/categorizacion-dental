@@ -1,0 +1,17 @@
+<!doctype html>
+<html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Vista aérea del consultorio dental</title>
+<style>
+*{box-sizing:border-box}html,body{margin:0;height:100%;background:#041226;color:#fff;font:14px system-ui,sans-serif}canvas{display:block;width:100%;height:100%;touch-action:pan-y;cursor:grab}canvas:active{cursor:grabbing}canvas:focus-visible,button:focus-visible{outline:3px solid #8eeaf2;outline-offset:-4px}.controls{position:absolute;bottom:18px;left:18px;right:18px;display:flex;gap:8px;justify-content:center;pointer-events:none}button{pointer-events:auto;background:#0a2541e8;color:#fff;border:1px solid #5b899d;border-radius:30px;padding:10px 16px;font:600 13px system-ui;cursor:pointer}#nogl{position:absolute;inset:0;background:#041226;display:grid;place-content:center;text-align:center;padding:30px}#nogl[hidden]{display:none}#nogl p{max-width:32ch;color:#b9cbd8}
+</style></head><body>
+<canvas id="c" tabindex="0" aria-label="Consultorio en vista aérea. Arrastra para desplazarte. Rueda del ratón o dos dedos para zoom. Activa Girar para cambiar el ángulo. Flechas para moverte, más y menos para zoom, Inicio para restablecer." aria-describedby="help"></canvas>
+<div class="controls" aria-label="Controles de vista aérea">
+  <div class="control-row"><button id="pan" type="button" aria-pressed="true">Mover</button><button id="orbit" type="button" aria-pressed="false">Girar</button><button id="zoom-out" type="button" aria-label="Alejar vista">−</button><output id="zoom-value" aria-label="Nivel de zoom">100%</output><button id="zoom-in" type="button" aria-label="Acercar vista">+</button></div>
+  <div class="control-row"><button id="top" type="button">Desde arriba</button><button id="play" type="button">Pausar giro</button><button id="reset" type="button" aria-label="Restablecer vista completa">Restablecer</button></div>
+  <p id="help">Arrastra para moverte · Rueda o pellizca para acercar</p>
+</div>
+<div id="nogl" role="status" hidden><strong>Vista 3D no disponible en este dispositivo</strong><p>Puedes solicitar tu diagnóstico con IA desde el botón de la página.</p></div>
+<style>
+canvas{touch-action:none}.controls{flex-direction:column;align-items:center;bottom:12px;left:8px;right:8px;gap:6px}.control-row{display:flex;align-items:center;justify-content:center;gap:5px;background:#041226d9;padding:4px;border-radius:24px;max-width:100%}button{padding:8px 12px;font-size:12px}button[aria-pressed=true]{background:#a2eef3;color:#062039;border-color:#a2eef3}button:disabled{opacity:.4;cursor:default}#zoom-value{min-width:46px;text-align:center;font-size:12px;font-variant-numeric:tabular-nums}#help{margin:0;padding:4px 8px;color:#c6d9e5;background:#041226d9;border-radius:8px;font-size:10px;text-align:center}@media(max-width:360px){button{padding:8px 9px;font-size:11px}#help{font-size:9px}}
+</style>
+<script src="./three.min.js"></script><script src="./GLTFLoader.js"></script><script src="./scene.js?v=2"></script>
+</body></html>
