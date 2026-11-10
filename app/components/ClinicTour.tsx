@@ -23,7 +23,7 @@ export default function ClinicTour({ children }: { children: ReactNode }) {
       <p className="aerial-disclaimer">Evaluación preliminar. No sustituye la evaluación profesional ni certifica el cumplimiento normativo.</p>
     </div>
     <div className="aerial-visual">
-      <div className="aerial-view-title"><span>EL CONSULTORIO, DESDE ARRIBA</span><span>VISTA 3D</span></div>
+      <div className="aerial-view-title"><span>CONSULTORIO IDEAL · REFERENCIA MINSA</span><span>¿TU CONSULTORIO TIENE TODO LO NECESARIO?</span></div>
       <iframe src="./consultorio-aereo/index.html?v=2" title="Recorrido aéreo interactivo del consultorio dental" className="aerial-frame" />
       <p className="aerial-hint">Acerca con la rueda o con dos dedos · Arrastra para moverte <span>Modelo ilustrativo · Solo vista aérea, sin recorrido interior</span></p>
     </div>

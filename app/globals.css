@@ -73,6 +73,8 @@
 .aerial-visual{min-width:0;border:1px solid #244157;border-radius:24px;overflow:hidden;background:#041226;box-shadow:0 24px 70px #0004}
 .aerial-view-title{display:flex;justify-content:space-between;gap:10px;padding:22px 24px 0;color:#a9cfdd;font-size:10px;font-weight:800;letter-spacing:.12em}
 .aerial-view-title span:last-child{color:#3bd7e8;white-space:nowrap}
+.aerial-view-title{flex-wrap:wrap;align-items:center;row-gap:8px}
+.aerial-view-title span:last-child{white-space:normal;color:#43e2ef;font-size:clamp(11px,1vw,14px);letter-spacing:.04em}
 .aerial-frame{display:block;width:100%;height:clamp(420px,42vw,640px);border:0}
 .aerial-hint{padding:0 20px 18px;margin:0;color:#b8ccd9;font-size:12px}
 .aerial-hint span{display:block;font-size:10px;color:#8ba0b2;margin-top:5px}
