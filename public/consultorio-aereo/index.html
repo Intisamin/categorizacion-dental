@@ -1,0 +1,10 @@
+<!doctype html>
+<html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Vista aérea del consultorio dental</title>
+<style>
+*{box-sizing:border-box}html,body{margin:0;height:100%;background:#041226;color:#fff;font:14px system-ui,sans-serif}canvas{display:block;width:100%;height:100%;touch-action:pan-y;cursor:grab}canvas:active{cursor:grabbing}canvas:focus-visible,button:focus-visible{outline:3px solid #8eeaf2;outline-offset:-4px}.controls{position:absolute;bottom:18px;left:18px;right:18px;display:flex;gap:8px;justify-content:center;pointer-events:none}button{pointer-events:auto;background:#0a2541e8;color:#fff;border:1px solid #5b899d;border-radius:30px;padding:10px 16px;font:600 13px system-ui;cursor:pointer}#nogl{position:absolute;inset:0;background:#041226;display:grid;place-content:center;text-align:center;padding:30px}#nogl[hidden]{display:none}#nogl p{max-width:32ch;color:#b9cbd8}
+</style></head><body>
+<canvas id="c" tabindex="0" aria-label="Consultorio en vista aérea. Arrastra para girar; usa las flechas del teclado para cambiar el ángulo desde arriba."></canvas>
+<div class="controls"><button id="play" type="button">Pausar giro</button><button id="reset" type="button">Restablecer vista</button></div>
+<div id="nogl" role="status" hidden><strong>Vista 3D no disponible en este dispositivo</strong><p>Puedes solicitar tu diagnóstico con IA desde el botón de la página.</p></div>
+<script src="./three.min.js"></script><script src="./GLTFLoader.js"></script><script src="./scene.js"></script>
+</body></html>
